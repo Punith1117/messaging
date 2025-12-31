@@ -45,9 +45,46 @@ const getUserDetails = async (id) => {
     return user
 }
 
+const getChat = async (user1Id, user2Id) => {
+    const chat = await prisma.chat.findUnique({
+        where: {
+            user1Id_user2Id: {
+                user1Id,
+                user2Id
+            }
+        }
+    })
+
+    return chat
+}
+
+const createChat = async (user1Id, user2Id, initiatorId) => {
+    await prisma.chat.create({
+        data: {
+            user1Id,
+            user2Id,
+            initiatedBy: initiatorId,
+            status: 'pending'
+        }
+    })
+}
+
+const addMessage = async (fromId, toId, content) => {
+    await prisma.message.create({
+        data: {
+            fromId,
+            toId,
+            content
+        }
+    })
+}
+
 module.exports = {
     userAlreadyExists,
     createUser,
     getUserAuthDetails,
-    getUserDetails
+    getUserDetails,
+    getChat,
+    createChat,
+    addMessage
 }
