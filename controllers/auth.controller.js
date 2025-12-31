@@ -1,5 +1,5 @@
-const { userAlreadyExists, createUser } = require("../databaseQueries");
-const { isValidUsername, isValidPassword, hashPassword } = require("../utils");
+const { userAlreadyExists, createUser, getUserAuthDetails } = require("../databaseQueries");
+const { isValidUsername, isValidPassword, hashPassword, comparePassword, getNewToken } = require("../utils");
 
 const signUpController = async (req, res) => {
     const {username, password, casualName} = req.body;
@@ -41,6 +41,40 @@ const signUpController = async (req, res) => {
     })
 }
 
+const loginController = async (req, res) => {
+    const { username, password } = req.body
+    
+    const user = await getUserAuthDetails(username);
+
+    if (!user) {
+        res.status(401).json({ // unauthorized
+            error: {
+                message: "Invalid username or password"
+            }
+        })
+        return
+    }
+
+    const correctPassword = await comparePassword(password, user.password)
+
+    if (!correctPassword) {
+        res.status(401).json({ // unauthorized
+            error: {
+                message: "Invalid username or password"
+            }
+        })
+        return
+    }
+
+    const token = getNewToken({id: user.id, username: user.username}) // sending payload
+
+    res.json({
+        message: `${user.username} is successfully authenticated for 5 mins`,
+        token
+    })
+}
+
 module.exports = {
-    signUpController
+    signUpController,
+    loginController
 }
