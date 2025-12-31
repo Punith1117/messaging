@@ -32,8 +32,22 @@ const getUserAuthDetails = async (username) => {
     return user
 }
 
+const getUserDetails = async (id) => {
+    const user = await prisma.user.findUnique({
+        where: { id },
+        select: {
+            id: true,
+            username: true,
+            casualName: true,
+        },
+    });
+
+    return user
+}
+
 module.exports = {
     userAlreadyExists,
     createUser,
-    getUserAuthDetails
+    getUserAuthDetails,
+    getUserDetails
 }
