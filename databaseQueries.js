@@ -79,6 +79,28 @@ const addMessage = async (fromId, toId, content) => {
     })
 }
 
+const getMessages = async (userId, otherUserId) => {
+    const messages = await prisma.message.findMany({
+        where: {
+            OR: [
+            {
+                fromId: userId,
+                toId: otherUserId
+            },
+            {
+                fromId: otherUserId,
+                toId: userId
+            }
+            ]
+        },
+        orderBy: {
+            createdAt: 'asc'
+        }
+    });
+
+    return messages
+}
+
 module.exports = {
     userAlreadyExists,
     createUser,
@@ -86,5 +108,6 @@ module.exports = {
     getUserDetails,
     getChat,
     createChat,
-    addMessage
+    addMessage,
+    getMessages
 }

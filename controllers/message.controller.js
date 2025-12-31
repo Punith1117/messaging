@@ -1,4 +1,4 @@
-const { getChat, createChat, addMessage } = require("../databaseQueries")
+const { getChat, createChat, addMessage, getMessages } = require("../databaseQueries")
 const { ChatStatus } = require("../prisma/generated/prisma/")
 
 const sendMessageController = async (req, res) => {
@@ -45,6 +45,33 @@ const sendMessageController = async (req, res) => {
     })
 }
 
+const getMessagesController = async (req, res) => {
+    const userId = req.user.id
+    const otherUserId = Number(req.params.userId)
+
+    const user1Id = Math.min(userId, otherUserId) // user1id is always lesser than user2Id
+    const user2Id = Math.max(userId, otherUserId)
+
+    const chat = await getChat(user1Id, user2Id)
+
+    if (!chat) {
+        res.status(404).json({ // not found
+            error: {
+                message: "You haven't started a conversation with this person yet"
+            }
+        })
+        return
+    }
+
+    const messages = await getMessages(userId, otherUserId)
+
+    res.json({
+        chatStatus: chat.status,
+        messages
+    })
+}
+
 module.exports = {
-    sendMessageController
+    sendMessageController,
+    getMessagesController
 }

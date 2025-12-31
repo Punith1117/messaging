@@ -1,7 +1,8 @@
 const messageRouter = require('express').Router()
-const { sendMessageController } = require('../controllers/message.controller')
+const { sendMessageController, getMessagesController } = require('../controllers/message.controller')
 const { protected } = require('../middleware')
 
 messageRouter.post('/', protected, sendMessageController)
+messageRouter.get('/:userId', protected, getMessagesController)
 
 module.exports = messageRouter
