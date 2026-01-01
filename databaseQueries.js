@@ -101,6 +101,21 @@ const getMessages = async (userId, otherUserId) => {
     return messages
 }
 
+const updateChatStatus = async (user1Id, user2Id, statusUpdatedBy, newStatus) => {
+    await prisma.chat.update({
+        where: {
+            user1Id_user2Id: {
+                user1Id,
+                user2Id
+            }
+        },
+        data: {
+            status: newStatus,
+            statusUpdatedBy
+        }
+    })
+}
+
 module.exports = {
     userAlreadyExists,
     createUser,
@@ -109,5 +124,6 @@ module.exports = {
     getChat,
     createChat,
     addMessage,
-    getMessages
+    getMessages,
+    updateChatStatus
 }
