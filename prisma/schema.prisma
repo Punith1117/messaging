@@ -20,25 +20,25 @@ model User {
   password   String
   casualName String?
 
-  chatsAsUser1 Chat[] @relation("User1Chats")
-  chatsAsUser2 Chat[] @relation("User2Chats")
+  chatsAsUser1       Chat[] @relation("User1Chats")
+  chatsAsUser2       Chat[] @relation("User2Chats")
+  statusUpdatedChats Chat[] @relation("ChatStatusUpdater")
 
   sentMessages     Message[] @relation("SentMessages")
   receivedMessages Message[] @relation("ReceivedMessages")
-  initiatedChats   Chat[]    @relation("ChatInitiator")
 }
 
 model Chat {
-  id          Int        @id @default(autoincrement())
-  user1Id     Int
-  user2Id     Int
-  initiatedBy Int
-  status      ChatStatus
-  createdAt   DateTime   @default(now())
+  id              Int        @id @default(autoincrement())
+  user1Id         Int
+  user2Id         Int
+  statusUpdatedBy Int
+  status          ChatStatus
+  createdAt       DateTime   @default(now())
 
-  user1     User @relation("User1Chats", fields: [user1Id], references: [id], onDelete: Cascade)
-  user2     User @relation("User2Chats", fields: [user2Id], references: [id], onDelete: Cascade)
-  initiator User @relation("ChatInitiator", fields: [initiatedBy], references: [id], onDelete: Cascade)
+  user1         User @relation("User1Chats", fields: [user1Id], references: [id], onDelete: Cascade)
+  user2         User @relation("User2Chats", fields: [user2Id], references: [id], onDelete: Cascade)
+  statusUpdater User @relation("ChatStatusUpdater", fields: [statusUpdatedBy], references: [id], onDelete: Cascade)
 
   @@unique([user1Id, user2Id])
 }
