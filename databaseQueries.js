@@ -63,7 +63,7 @@ const createChat = async (user1Id, user2Id, initiatorId) => {
         data: {
             user1Id,
             user2Id,
-            initiatedBy: initiatorId,
+            statusUpdatedBy: initiatorId,
             status: 'pending'
         }
     })
