@@ -21,6 +21,8 @@ model User {
   casualName String?
   mood       Mood    @default(neutral)
 
+  @@index([username])
+
   chatsAsUser1       Chat[] @relation("User1Chats")
   chatsAsUser2       Chat[] @relation("User2Chats")
   statusUpdatedChats Chat[] @relation("ChatStatusUpdater")
