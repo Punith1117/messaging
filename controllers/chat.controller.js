@@ -1,5 +1,6 @@
-const { getChat, updateChatStatus } = require("../databaseQueries")
+const { getChat, updateChatStatus, getAllChats } = require("../databaseQueries")
 const { ChatStatus } = require("../prisma/generated/prisma")
+const { cleanChats } = require("../utils")
 
 const updateChatStatusController = async (req, res) => {
     const userId = req.user.id
@@ -67,6 +68,18 @@ const updateChatStatusController = async (req, res) => {
     return sendMessageJson(res, "You do not have access to perform this request", true, 403)
 }
 
+const getAllChatsController = async (req, res) => {
+    const userId = req.user.id
+    
+    const uncleanedChats = await getAllChats(userId) // Here, every element contains data of both current and other user which is unnecessary
+
+    const chats = cleanChats(userId, uncleanedChats)
+
+    res.json({
+        chats
+    })
+}
+
 const sendMessageJson = (res, message, isError, statusCode) => {
     if (isError) {
         res.status(statusCode).json({
@@ -83,5 +96,6 @@ const sendMessageJson = (res, message, isError, statusCode) => {
 }
 
 module.exports = {
-    updateChatStatusController
+    updateChatStatusController,
+    getAllChatsController
 }

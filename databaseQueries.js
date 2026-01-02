@@ -116,6 +116,39 @@ const updateChatStatus = async (user1Id, user2Id, statusUpdatedBy, newStatus) =>
     })
 }
 
+const getAllChats = async (userId) => {
+    const chats = await prisma.chat.findMany({
+        where: {
+            OR: [
+                {
+                    user1Id: userId
+                },
+                {
+                    user2Id: userId
+                }
+            ]
+        },
+        include: {
+            user1: {
+                select: {
+                    id: true,
+                    username: true,
+                    casualName: true
+                }
+            },
+            user2: {
+                select: {
+                    id: true,
+                    username: true,
+                    casualName: true
+                }
+            }
+        }
+    })
+
+    return chats
+}
+
 module.exports = {
     userAlreadyExists,
     createUser,
@@ -125,5 +158,6 @@ module.exports = {
     createChat,
     addMessage,
     getMessages,
-    updateChatStatus
+    updateChatStatus,
+    getAllChats
 }

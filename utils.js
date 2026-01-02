@@ -26,10 +26,26 @@ const getNewToken = (payload) => {
     return token
 }
 
+const cleanChats = (userId, chats) => {
+	return chats.map(chat => {
+		const user =
+			chat.user1.id === userId ? chat.user2 : chat.user1
+
+		return {
+			id: chat.id,
+			status: chat.status,
+			statusUpdatedBy: chat.statusUpdatedBy,
+			createdAt: chat.createdAt,
+			user
+		}
+	})
+}
+
 module.exports = {
     isValidUsername,
     isValidPassword,
     hashPassword,
     comparePassword,
-    getNewToken
+    getNewToken,
+	cleanChats
 }
