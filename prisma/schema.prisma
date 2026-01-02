@@ -19,6 +19,7 @@ model User {
   username   String  @unique
   password   String
   casualName String?
+  mood       Mood    @default(neutral)
 
   chatsAsUser1       Chat[] @relation("User1Chats")
   chatsAsUser2       Chat[] @relation("User2Chats")
@@ -26,6 +27,13 @@ model User {
 
   sentMessages     Message[] @relation("SentMessages")
   receivedMessages Message[] @relation("ReceivedMessages")
+}
+
+enum Mood {
+  angry
+  happy
+  sad
+  neutral
 }
 
 model Chat {
@@ -41,6 +49,8 @@ model Chat {
   statusUpdater User @relation("ChatStatusUpdater", fields: [statusUpdatedBy], references: [id], onDelete: Cascade)
 
   @@unique([user1Id, user2Id])
+  @@index([user1Id])
+  @@index([user2Id])
 }
 
 enum ChatStatus {
