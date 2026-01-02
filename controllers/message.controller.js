@@ -75,11 +75,22 @@ const sendMessageController = async (req, res) => {
 const getMessagesController = async (req, res) => {
     const userId = req.user.id
     const otherUserId = Number(req.params.userId)
+    const limit = Math.min(Number(req.query.limit) || 20, 50);
+    const cursor = req.query.cursor !== undefined ? Number(req.query.cursor) : undefined; // message id
+
+    if (cursor !== undefined && !Number.isInteger(cursor)) {
+        return res.status(400).json({
+            error: { message: "Invalid cursor value" },
+        });
+    }
 
     const user1Id = Math.min(userId, otherUserId) // user1id is always lesser than user2Id
     const user2Id = Math.max(userId, otherUserId)
 
     const chat = await getChat(user1Id, user2Id)
+
+    // if chat exists then at least one message exists because 
+    // first message is always added after chat creation
 
     if (!chat) {
         res.status(404).json({ // not found
@@ -90,11 +101,20 @@ const getMessagesController = async (req, res) => {
         return
     }
 
-    const messages = await getMessages(userId, otherUserId)
+    const messages = await getMessages(userId, otherUserId, cursor, limit)
+
+    let nextCursor = null;
+    if (messages.length === limit + 1) {
+        const nextItem = messages[messages.length - 1]; // last item
+        nextCursor = nextItem.id;
+    }
+
+    messages.reverse()
 
     res.json({
         chatStatus: chat.status,
-        messages
+        messages,
+        nextCursor
     })
 }
 

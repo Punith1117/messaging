@@ -79,23 +79,22 @@ const addMessage = async (fromId, toId, content) => {
     })
 }
 
-const getMessages = async (userId, otherUserId) => {
+const getMessages = async (userId, otherUserId, cursor, limit) => {
     const messages = await prisma.message.findMany({
         where: {
             OR: [
-            {
-                fromId: userId,
-                toId: otherUserId
-            },
-            {
-                fromId: otherUserId,
-                toId: userId
-            }
-            ]
+            { fromId: userId, toId: otherUserId },
+            { fromId: otherUserId, toId: userId },
+            ],
         },
         orderBy: {
-            createdAt: 'asc'
-        }
+            createdAt: "desc",
+        },
+        take: limit + 1,
+        ...(cursor && {
+            cursor: { id: cursor },
+            skip: 1,
+        }),
     });
 
     return messages
