@@ -28,7 +28,7 @@ const getProfileController = async (req, res) => {
     const userId = req.user.id
     const otherUserId = Number(req.params.id)
 
-    if (!otherUserId) {
+    if (!otherUserId || otherUserId === userId) {
         const profile = await getProfile(userId, true)
 
         res.json({
