@@ -68,4 +68,7 @@ model Message {
 
   from User @relation("SentMessages", fields: [fromId], references: [id], onDelete: Cascade)
   to   User @relation("ReceivedMessages", fields: [toId], references: [id], onDelete: Cascade)
+
+  @@index([fromId, toId, createdAt])
+  @@index([toId, fromId, createdAt])
 }
