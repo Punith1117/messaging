@@ -149,6 +149,18 @@ const getAllChats = async (userId) => {
     return chats
 }
 
+const updateProfile = async (userId, {casualName, mood}) => {
+    await prisma.user.update({
+        where: {
+            id: userId
+        },
+        data: {
+            casualName,
+            mood
+        }
+    })
+}
+
 module.exports = {
     userAlreadyExists,
     createUser,
@@ -159,5 +171,6 @@ module.exports = {
     addMessage,
     getMessages,
     updateChatStatus,
-    getAllChats
+    getAllChats,
+    updateProfile
 }
