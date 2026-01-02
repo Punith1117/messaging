@@ -5,6 +5,15 @@ const sendMessageController = async (req, res) => {
     const {id} = req.user
     const {toId, content} = req.body
 
+    if (!content || !toId || !Number.isInteger(toId)) {
+        res.status(400).json({
+            error: {
+                message: "Required details is missing"
+            }
+        })
+        return
+    }
+
     if (toId === id) {
         res.status(400).json({
             error: {
@@ -20,8 +29,17 @@ const sendMessageController = async (req, res) => {
     const chat = await getChat(user1Id, user2Id)
 
     if (!chat) {
-        await createChat(user1Id, user2Id, id)
-        await addMessage(id, toId, content)
+        try {
+            await createChat(user1Id, user2Id, id)
+            await addMessage(id, toId, content)
+        } catch (e) {
+            res.status(400).json({
+                error: {
+                    message: "The user you are trying to send a message doesn't exist"
+                }
+            })
+            return
+        }
 
         res.json({
             message: "New chat successfully created and message is sent"
