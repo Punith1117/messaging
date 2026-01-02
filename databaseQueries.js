@@ -178,6 +178,25 @@ const getProfile = async (userId, getMood) => {
     return profile
 }
 
+const getUsers = async (userId, query) => {
+    const users = await prisma.user.findMany({
+        where: {
+            id: { not: userId }, // exclude self
+            username: {
+                contains: query,
+                mode: "insensitive", // case-insensitive search
+            },
+        },
+        select: {
+            id: true,
+            username: true,
+            casualName: true,
+        },
+    });
+
+    return users
+}
+
 module.exports = {
     userAlreadyExists,
     createUser,
@@ -190,5 +209,6 @@ module.exports = {
     updateChatStatus,
     getAllChats,
     updateProfile,
-    getProfile
+    getProfile,
+    getUsers
 }
