@@ -5,6 +5,15 @@ const sendMessageController = async (req, res) => {
     const {id} = req.user
     const {toId, content} = req.body
 
+    if (toId === id) {
+        res.status(400).json({
+            error: {
+                message: "You cannot message yourself"
+            }
+        })
+        return
+    }
+
     const user1Id = Math.min(id, toId) // user1id is always lesser than user2Id
     const user2Id = Math.max(id, toId)
 
