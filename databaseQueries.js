@@ -161,6 +161,24 @@ const updateProfile = async (userId, {casualName, mood}) => {
     })
 }
 
+const getProfile = async (userId, getMood) => {
+    if (!getMood) getMood = false
+    
+    const profile = await prisma.user.findUnique({
+        where: {
+            id: userId
+        },
+        select: {
+            id: true,
+            username: true,
+            casualName: true,
+            mood: getMood
+        }
+    })
+    
+    return profile
+}
+
 module.exports = {
     userAlreadyExists,
     createUser,
@@ -172,5 +190,6 @@ module.exports = {
     getMessages,
     updateChatStatus,
     getAllChats,
-    updateProfile
+    updateProfile,
+    getProfile
 }
