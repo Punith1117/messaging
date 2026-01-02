@@ -1,5 +1,6 @@
 const express = require('express')
 const passport = require('passport')
+const cors = require('cors')
 const { healthRouter } = require('./routes/health.route')
 const authRouter = require('./routes/auth.route')
 const messageRouter = require('./routes/message.route')
@@ -8,6 +9,12 @@ const profileRouter = require('./routes/profile.route')
 const metaRouter = require('./routes/meta.route')
 const userRouter = require('./routes/user.route')
 const app = express()
+
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}))
 app.use(express.json())
 app.use(passport.initialize())
 require('dotenv').config()
