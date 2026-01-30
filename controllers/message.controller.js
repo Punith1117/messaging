@@ -113,6 +113,7 @@ const getMessagesController = async (req, res) => {
 
     res.json({
         chatStatus: chat.status,
+        statusUpdatedBy: chat.statusUpdatedBy,
         messages,
         nextCursor
     })

@@ -26,7 +26,7 @@
 	* POST /:otherUserId/:newStatus - update status of chat 
 - /message
 	* POST / - send messages (send toId and content through JSON)
-	* GET /:userId?limit=10&cursor=10 - get messages sent to or received from particular user. You receive chat status, messages and nextCursor.
+	* GET /:userId?limit=10&cursor=10 - get messages sent to or received from particular user. You receive chatStatus, statusUpdatedBy, messages and nextCursor.
 - /auth
 	* POST /signup - send username, password and casualName through JSON
 	* POST /login - send username and password through JSON. You receive 'token' that is valid for few mins
