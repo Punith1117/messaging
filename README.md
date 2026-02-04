@@ -38,3 +38,6 @@
 - JWT based (stateless)
 - Passport JWT-strategy
 - Token validity is few minutes
+
+## Frontend: 
+https://github.com/Punith1117/messaging-frontend
