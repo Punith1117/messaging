@@ -31,18 +31,24 @@ const updateChatStatusController = async (req, res) => {
 
     const { status, statusUpdatedBy } = chat
 
-    // PENDING → ACCEPTED (only receiver)
+    // PENDING → ACCEPTED | BLOCKED (only receiver)
     if (status === ChatStatus.pending) {
         if (userId === statusUpdatedBy) {
-            return sendMessageJson(res, "You cannot accept your own chat invite", true, 403)
+            return sendMessageJson(res, "You cannot update your own chat invite", true, 403)
         }
 
-        if (newStatus !== ChatStatus.accepted) {
+        if (![ChatStatus.accepted, ChatStatus.blocked].includes(newStatus)) {
             return sendMessageJson(res, "Invalid status transition", true, 400)
         }
-
-        await updateChatStatus(user1Id, user2Id, userId, ChatStatus.accepted)
-        return sendMessageJson(res, "Chat is successfully accepted")
+        
+        await updateChatStatus(user1Id, user2Id, userId, newStatus)
+        
+        return sendMessageJson(
+            res,
+            newStatus === ChatStatus.accepted
+                ? "Chat is successfully accepted"
+                : "Chat invite rejected"
+        )
     }
 
     // ACCEPTED → BLOCKED (anyone)
